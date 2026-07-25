@@ -1,0 +1,20 @@
+# Build artifacts
+build/
+*.exe
+*.o
+*.obj
+*.dll
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+
+# Python cache & logs
+__pycache__/
+*.pyc
+*.log
+
+# Third-party temporary / cached files
+third_party/*.zip
+third_party/*.tar.gz
