@@ -2,6 +2,8 @@
 #include "../utils/JsonHelper.h"
 #include <nlohmann/json.hpp>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <exception>
 
 using json = nlohmann::json;
@@ -22,6 +24,22 @@ void ApiController::setupRoutes() {
         }
         return httplib::Server::HandlerResponse::Unhandled;
     });
+
+    // 0. GET / (Serve index.html Web Dashboard)
+    auto serveIndexHtml = [](const httplib::Request& req, httplib::Response& res) {
+        std::ifstream file("index.html");
+        if (file.is_open()) {
+            std::stringstream buffer;
+            buffer << file.rdbuf();
+            res.set_content(buffer.str(), "text/html");
+            res.status = 200;
+        } else {
+            res.status = 404;
+            res.set_content("<h1>404 Not Found</h1><p>index.html not found on server.</p>", "text/html");
+        }
+    };
+    svr.Get("/", serveIndexHtml);
+    svr.Get("/index.html", serveIndexHtml);
 
     // 1. POST /polynomial/parse
     svr.Post("/polynomial/parse", [this](const httplib::Request& req, httplib::Response& res) {
